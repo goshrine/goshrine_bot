@@ -1,0 +1,5 @@
+yourbotname:
+  :login: yourbotlogin
+  :password: yourbotpass
+  :gtp_cmd_line: gnugo --mode gtp
+

@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require File.join(File.dirname(__FILE__), '..', 'lib', 'goshrine_bot')
+EventMachine.run {
+  EM.error_handler{ |e|
+    puts  "Error raised during event loop: #{e.message} " + e.backtrace.join("\n")
+  }
+  GoshrineBot::Runner.run
+}
+
