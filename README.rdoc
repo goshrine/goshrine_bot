@@ -24,6 +24,10 @@ The GTP protocol is documented here: http://www.lysator.liu.se/~gunnar/gtp/
 
 * Run goshrine_bot botname
 
+== TROUBLESHOOTING:
+
+Look for a file named something like gtp_08e03daa.log.  An exit status of 255 means that your program could not be found.
+
 == REQUIREMENTS:
 
 * json
