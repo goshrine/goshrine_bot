@@ -56,6 +56,7 @@ module GoshrineBot
     end
     
     def unbind
+      puts "gtp process exited with status: #{get_status.exitstatus.inspect}"
       log "gtp process exited with status: #{get_status.exitstatus.inspect}"
     end
   end
@@ -67,7 +68,7 @@ module GoshrineBot
   
     def initialize(command_line, logfile="gtp.log")
       @command_line = command_line
-      puts "Opening #{command_line.inspect}"
+      puts "Opening #{command_line.inspect} (logging to file '#{logfile}')"
       @gtp = EM.popen(@command_line, GtpProcess, "args!")
       @gtp.logfile = logfile
       @logfile = logfile
