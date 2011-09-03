@@ -197,6 +197,7 @@ module GoshrineBot
       gtp = GtpStdioClient.new(@client.gtp_cmd_line, "gtp_#{token}.log")
       gtp.boardsize(@board_size)
       gtp.clear_board
+      gtp.komi(@komi)
       
       if @handicap_stones.size > 0
         gtp_coords = @handicap_stones.map {|s| sgf_coord_to_gtp_coord(s, board_size) }
