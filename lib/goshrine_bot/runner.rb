@@ -18,6 +18,7 @@ module GoshrineBot
         :server_url => "http://goshrine.com/",
         :gtp_cmd_line => "gnugo --mode gtp",
         :debug => false,
+        :idle_shutdown_timeout => 60,
         :pid_path => "./goshrine_bot.pid",
         :log_path => "./goshrine_bot.log",
       }

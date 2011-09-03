@@ -102,11 +102,13 @@ module GoshrineBot
         end
         subscribe          
         load_existing_games {
-          EM::add_periodic_timer( 60 ) {
-            @games.each do |token, game|
-              game.idle_check
-            end
-          }
+          if @options[:idle_shutdown_timeout] > 0
+            EM::add_periodic_timer( @options[:idle_shutdown_timeout] ) {
+              @games.each do |token, game|
+                game.idle_check(@options[:idle_shutdown_timeout])
+              end
+            }
+          end
         }
       }
     end

@@ -89,9 +89,9 @@ module GoshrineBot
       end
     end
     
-    def idle_check
-      if @last_gtp_access && @last_gtp_access + 60 < Time.now
-        puts "Shutting down gtp client #{self.token} for idle."
+    def idle_check(timeout)
+      if timeout > 0 && @last_gtp_access && @last_gtp_access + timeout < Time.now
+        puts "Shutting down gtp client #{self.token} after #{timeout} seconds idle."
         stop_gtp_client
       end
     end
