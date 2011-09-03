@@ -197,13 +197,12 @@ module GoshrineBot
       gtp = GtpStdioClient.new(@client.gtp_cmd_line, "gtp_#{token}.log")
       gtp.boardsize(@board_size)
       gtp.clear_board
-      #if @handicap > 1
-      #  gtp.fixed_handicap(@handicap)
-      #end
-      @handicap_stones.each do |s|
-        puts "Placing handicap stone at #{s}"
-        gtp.play('B', sgf_coord_to_gtp_coord(s, board_size))
+      
+      if @handicap_stones.size > 0
+        gtp_coords = @handicap_stones.map {|s| sgf_coord_to_gtp_coord(s, board_size) }
+        gtp.set_free_handicap(gtp_coords.join(" "))
       end
+      
       if @moves
         @moves.each do |m|
           #puts "Going to play #{m.first}, #{m.last}"
