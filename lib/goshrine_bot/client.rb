@@ -1,3 +1,5 @@
+require 'uri'
+
 module GoshrineBot
 
   class Client
@@ -154,14 +156,23 @@ module GoshrineBot
     end
     
     def handle_match_request(request)
+      active_games = @games.select { |key, game| game.state == "in-play" }
+      max_games = @options[:maximum_concurrent_games]
       game = GameInProgress.new(self)
       game.update_from_match_request(request)
-      http = http_get("/match/accept?id=#{game.challenge_id}")
-      http.callback {
-        attrs = JSON.parse(http.response)
-        game.update_from_game_list(attrs)
-        add_game(game)
-      }
+      if max_games.nil? || active_games.count < max_games
+        http = http_get("/match/accept?id=#{game.challenge_id}")
+        http.callback {
+          attrs = JSON.parse(http.response)
+          game.update_from_game_list(attrs)
+          add_game(game)
+        }
+      else 
+        count = max_games > 1 ? "#{max_games} games" : "1 game"
+        reason = "#{@login} only plays #{count} at a time."
+        puts "Rejecting match: #{reason}"
+        http = http_get("/match/reject?id=#{game.challenge_id}&reason=#{URI.escape(reason)}")
+      end
     end
     
   end

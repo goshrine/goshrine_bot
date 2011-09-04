@@ -39,6 +39,7 @@ module GoshrineBot
         #puts "Going to update board"
       when 'resignedBy'
         puts "Game resigned by opponent."
+        self.state = "finished"
         stop_gtp_client
       when 'updateForUndo'
         # TODO - handle undos?
@@ -49,6 +50,7 @@ module GoshrineBot
         # ignore
       when 'gameFinished'
         stop_gtp_client
+        self.state = "finished"
         if m['data'].nil?
           puts "Missing data: #{m.inspect}"
           return
