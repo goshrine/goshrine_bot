@@ -28,13 +28,13 @@ The GTP protocol is documented here: http://www.lysator.liu.se/~gunnar/gtp/
 
 In addition to the options listed above, there are some other configuration options that allow you avoid having your bot shut down for idle, and to limit the maximum number of games your bot will play at a time.
 
-local_gnugo:
-  :login: gnugo
-  :password: testpass
-  :gtp_cmd_line: gnugo --mode gtp --level 10
-  :idle_shutdown_timeout: 10
-  :maximum_concurrent_games: 1
-  :debug: false
+ local_gnugo:
+   :login: gnugo
+   :password: testpass
+   :gtp_cmd_line: gnugo --mode gtp --level 10
+   :idle_shutdown_timeout: 10
+   :maximum_concurrent_games: 1
+   :debug: false
 
 == TROUBLESHOOTING:
 
