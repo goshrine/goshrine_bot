@@ -45,6 +45,10 @@ Look for a file named something like gtp_08e03daa.log.  An exit status of 255 me
 * json
 * eventmachine
 
+== THANKS:
+
+Thanks to Gareth Davies for improvements that allow goshrine_bot to run pachi (and likely other bots as well).
+
 == LICENSE:
 
 (The MIT License)
