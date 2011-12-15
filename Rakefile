@@ -6,7 +6,7 @@
 
 require 'rake'
 require 'rspec/core/rake_task'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 
 task :default => :spec
 
@@ -16,7 +16,7 @@ end
 
 load(File.join(File.dirname(__FILE__), "goshrine_bot.gemspec"))
 
-Rake::GemPackageTask.new(SPEC) do |package|
+Gem::PackageTask.new(SPEC) do |package|
   # do nothing: I just need a gem but this block is required
 end
 
