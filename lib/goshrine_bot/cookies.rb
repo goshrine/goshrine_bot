@@ -23,23 +23,24 @@ class CookieHash < Hash #:nodoc:
 end
 
 class CookiePersist
-  def self.cookies
+  
+  def cookies
     Thread.current[:cookies] ||= []
   end
 
-  def self.cookie_hash
+  def cookie_hash
     CookieHash.new.tap { |hsh|
       cookies.uniq.each { |c| hsh.add_cookies(c) }
     }
   end
 
-  def self.request(head, body)
+  def request(client, head, body)
     head['cookie'] = cookie_hash.to_cookie_string
-    #puts "Sending cookies: #{head['cookie']}"
     [head, body]
   end
 
-  def self.response(resp)
+  def response(resp)
+    cookies << resp.response_header[EM::HttpClient::SET_COOKIE]
     resp
   end
 end

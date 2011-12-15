@@ -7,7 +7,7 @@ require 'logger'
 
 module GoshrineBot
 
-  VERSION = "0.1.12"
+  VERSION = "0.1.13"
 
   STDOUT.sync = true
   
@@ -15,6 +15,7 @@ module GoshrineBot
   
   %w[ client
       gtp_stdio_client
+      goshrine_request
       runner
       game
       cookies

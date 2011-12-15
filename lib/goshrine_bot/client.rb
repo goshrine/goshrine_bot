@@ -4,11 +4,9 @@ module GoshrineBot
 
   class Client
 
-    class << self
-    end
-
     def initialize(options)
       @base_url = URI::parse(options[:server_url])
+      GoshrineRequest.base_url = @base_url
       @options = options
       @password = options[:password]
       @login = options[:login]
@@ -27,8 +25,8 @@ module GoshrineBot
     
     def login(&blk)
       # login
-      http = http_post('/sessions/create', {'login' => @login, 'password' => @password})
-      http.callback {
+      request = GoshrineRequest.new('/sessions/create').post(:body => {'login' => @login, 'password' => @password})
+      request.callback { |http|
         if http.response_header.status == 401
           puts "Invalid Login or Password"
           EventMachine::stop
@@ -47,38 +45,14 @@ module GoshrineBot
           end
         end
       }
-      http.errback {|response|
+      request.errback { |http|
         puts "Login failed (network issue?)";
       }
     end
-    
-    def http_post(path, data = nil)
-      conn = EM::HttpRequest.new("#{@base_url}#{path}")
-      conn.use CookiePersist
-      headers = {'Accept' => 'application/json'}
-      
-      http = conn.post(:head => headers, :body => data)
-      
-      http.headers { |head|
-        CookiePersist.cookies << head[EM::HttpClient::SET_COOKIE]
-      }
-      http
-    end
-
-    def http_get(path)
-      conn = EM::HttpRequest.new("#{@base_url}#{path}")
-      conn.use CookiePersist
-      
-      http = conn.get(:head => {'Accept' => 'application/json'})
-      
-      http.headers { |head|
-        CookiePersist.cookies << head[EM::HttpClient::SET_COOKIE]
-      }
-      http
-    end
-    
+        
     def subscribe
       @faye_client.subscribe("/user/private/" + @queue_id) do |m|
+        puts "msg"
         msg_type = m["type"]
         case msg_type
         when 'match_requested'
@@ -106,6 +80,7 @@ module GoshrineBot
         load_existing_games {
           if @options[:idle_shutdown_timeout] > 0
             EM::add_periodic_timer( @options[:idle_shutdown_timeout] ) {
+              puts "checking"
               @games.each do |token, game|
                 game.idle_check(@options[:idle_shutdown_timeout])
               end
@@ -116,9 +91,9 @@ module GoshrineBot
     end
 
     def load_existing_games(&blk)
-      http = http_get('/game/active')
-      http.callback {
-        #puts "Got #{response.inspect}"
+      request = GoshrineRequest.new('/game/active').get
+      request.callback { |http|
+        #puts "Got #{http.inspect}"
         games = JSON.parse(http.response)
         puts "#{games.count} game(s) in progress"
         games.each do |game_attrs|
@@ -147,12 +122,12 @@ module GoshrineBot
 
     def handle_match_accept(token)
       game = GameInProgress.new(self)
-      http = http_get("/g/#{token}")
-      http.callback {
+      request = GoshrineRequest.new("/g/#{token}")
+      request.callback { |http|
         attrs = JSON.parse(http.response)
         game.update_from_game_list(attrs)
         add_game(game)
-      }      
+      }
     end
     
     def handle_match_request(request)
@@ -161,8 +136,8 @@ module GoshrineBot
       game = GameInProgress.new(self)
       game.update_from_match_request(request)
       if max_games.nil? || active_games.count < max_games
-        http = http_get("/match/accept?id=#{game.challenge_id}")
-        http.callback {
+        request = GoshrineRequest.new("/match/accept?id=#{game.challenge_id}").get
+        request.callback { |http|
           attrs = JSON.parse(http.response)
           game.update_from_game_list(attrs)
           add_game(game)
@@ -171,7 +146,7 @@ module GoshrineBot
         count = max_games > 1 ? "#{max_games} games" : "1 game"
         reason = "#{@login} only plays #{count} at a time."
         puts "Rejecting match: #{reason}"
-        http = http_get("/match/reject?id=#{game.challenge_id}&reason=#{URI.escape(reason)}")
+        GoshrineRequest.new("/match/reject?id=#{game.challenge_id}&reason=#{URI.escape(reason)}").get
       end
     end
     

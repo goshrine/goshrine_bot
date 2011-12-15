@@ -29,7 +29,7 @@ module GoshrineBot
         user_id = m["id"].to_i
         puts "User arrived (#{token}): #{m["login"]}"
         if state == 'new' && (user_id == black_player_id || user_id == white_player_id)
-          http = @client.http_post("/game/#{token}/attempt_start")
+          GoshrineRequest.new("/game/#{token}/attempt_start").post
         end
       when 'game_started'
         self.state = "in-play"
@@ -102,7 +102,7 @@ module GoshrineBot
       puts "Got private game message: #{m.inspect}"
       case m["type"]
       when 'undo_requested'
-        @client.http_post("/game/accept_undo/" + m["request_id"])
+        GoshrineReuqest.new("/game/accept_undo/" + m["request_id"]).post
       end
     end
     
@@ -157,7 +157,7 @@ module GoshrineBot
       end
       
       if state == 'new'
-        http = @client.http_post("/game/#{token}/attempt_start")
+        GoshrineRequest.new("/game/#{token}/attempt_start").post
       end
       
     end
@@ -177,15 +177,16 @@ module GoshrineBot
       res.callback { |response_move|
         puts "Generated move: #{response_move} (#{token})"
         self.move_number += 1
+        request = nil
         if response_move.upcase == 'PASS'
-          http = @client.http_post("/game/#{token}/pass")
+          request = GoshrineRequest.new("/game/#{token}/pass").post
         elsif response_move.upcase == 'RESIGN'
-          http = @client.http_post("/game/#{token}/resign")
+          request = GoshrineRequest.new("/game/#{token}/resign").post
         else
           rgo_coord = gtp_coord_to_goshrine_coord(response_move.upcase, board_size)
-          http = @client.http_post("/game/#{token}/move/#{rgo_coord}")
+          request = GoshrineRequest.new("/game/#{token}/move/#{rgo_coord}").post
         end
-        http.callback {
+        request.callback { |http|
           if http.response_header.status == 200
             self.moves << [my_color, response_move]
           else
@@ -193,7 +194,7 @@ module GoshrineBot
           end
         }
       }
-    end    
+    end
     
     def start_engine
       gtp = GtpStdioClient.new(@client.gtp_cmd_line, "gtp_#{token}.log")

@@ -21,7 +21,7 @@ SPEC = Gem::Specification.new do |s|
   END_DESCRIPTION
 
   s.add_dependency('eventmachine', '>= 0.12.10')
-  s.add_dependency('em-http-request', '>= 1.0.0')
+  s.add_dependency('em-http-request', '>= 0.3')
   s.add_dependency('faye', '>= 0.6.0')
   s.add_dependency('json', '>= 1.5.0')
 
