@@ -80,7 +80,6 @@ module GoshrineBot
         load_existing_games {
           if @options[:idle_shutdown_timeout] > 0
             EM::add_periodic_timer( @options[:idle_shutdown_timeout] ) {
-              puts "checking"
               @games.each do |token, game|
                 game.idle_check(@options[:idle_shutdown_timeout])
               end
