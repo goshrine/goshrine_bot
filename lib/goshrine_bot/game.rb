@@ -78,11 +78,13 @@ module GoshrineBot
       if pos && color && color != my_color
         pos = sgf_coord_to_gtp_coord(pos, board_size)
         move_proc = Proc.new do
-          self.moves << [color, pos]
-          self.move_number = m["move_number"].to_i
-          self.turn = m["color"] == "b" ? "w" : "b"
-          puts "Going to make move..."
-          make_move
+          gtp_client.play(color, pos).callback {
+            self.moves << [color, pos]
+            self.move_number = m["move_number"].to_i
+            self.turn = m["color"] == "b" ? "w" : "b"
+            puts "Going to make move..."
+            make_move
+          }
         end
         if m["black_seconds_left"] && m["white_seconds_left"]
           gtp_client.time_left("B", m["black_seconds_left"] || 0, 0).callback {
