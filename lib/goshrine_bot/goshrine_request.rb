@@ -13,7 +13,6 @@ module GoshrineBot
     end
     
     def do_http(verb,options)
-      puts "Sending"
       options[:head] = 
         {'Accept' => 'application/json', 
          'cookie' => @cookie_persist.cookie_hash.to_cookie_string}
@@ -22,7 +21,6 @@ module GoshrineBot
       
       defer = EM::DefaultDeferrable.new
       http.callback {
-        puts "Persisting cookies"
         @cookie_persist.cookies << http.response_header[EM::HttpClient::SET_COOKIE]
         defer.succeed(http)
       }
