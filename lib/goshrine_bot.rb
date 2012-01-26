@@ -1,8 +1,8 @@
 require 'rubygems'
 require 'json'
+require 'faye'
 require 'eventmachine'
 require 'em-http'
-require 'faye'
 require 'logger'
 
 module GoshrineBot
