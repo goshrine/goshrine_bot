@@ -57,6 +57,9 @@ module GoshrineBot
         elsif m['data']['scoring_info'].nil?
           puts "Missing scoring_info: #{m.inspect}"
           return
+        elsif m['data']['scoring_info']['score'].nil?
+          puts "Missing score (game_id = #{game_id}): #{m.inspect}"
+          return
         end
         score = m['data']['scoring_info']['score']
         winner = score['black'] > score['white'] ? 'B' : 'W'
