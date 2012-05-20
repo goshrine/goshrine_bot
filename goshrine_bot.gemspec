@@ -14,7 +14,7 @@ SPEC = Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.authors = ["Pete Schwamb"]
   s.email = ["pete@schwamb.net"]
-  s.homepage = "http://github.com/ps2/goshrine_bot"
+  s.homepage = "http://github.com/goshrine/goshrine_bot"
   s.summary = "A client to connect GTP go programs to GoShrine"
   s.description = <<-END_DESCRIPTION.gsub(/\s+/, " ").strip
   The GoShrine bot client is a library that allows you connect a local Go playing program that speaks GTP (like gnugo) to http://goshrine.com.
